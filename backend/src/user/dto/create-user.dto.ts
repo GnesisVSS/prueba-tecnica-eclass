@@ -22,7 +22,7 @@ export class CreateUserDto {
     contrasena : string;
 
     @IsOptional()
-    role: string;
+    rol: string;
 
     @IsOptional()
     estado: string;

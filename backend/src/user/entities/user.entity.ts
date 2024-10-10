@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { Estado } from "../enum/estado.enum";
-import { Role } from "../enum/roles.enum";
+import { Rol } from "../enum/roles.enum";
 
 @Entity('usuarios')
 export class User {
@@ -21,8 +21,8 @@ export class User {
 
     @Column({
         type: 'enum',
-        enum: Role,
-        default: Role.user
+        enum: Rol,
+        default: Rol.usuario
     })
     rol: string;
 
