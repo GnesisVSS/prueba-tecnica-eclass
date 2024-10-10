@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { Estado } from "../enum/estado.enum";
 import { Role } from "../enum/roles.enum";
 
-@Entity()
+@Entity('usuarios')
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
@@ -24,7 +24,7 @@ export class User {
         enum: Role,
         default: Role.user
     })
-    role: string;
+    rol: string;
 
     @Column({
         type: 'enum',
