@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,7 +31,7 @@ export class UserService {
   }
 
   // Contrasena hasheada usando bcrypt
-  private async contrasenaHash (contrasena: string): Promise<string> {
+  private async contrasenaHash(contrasena: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     return bcrypt.hash(contrasena, salt);
   }
@@ -50,7 +50,7 @@ export class UserService {
 
     // Si el usuario existe significa que ya está registrado y no puede registrarse nuevamente
     if (existeUsuario) {
-      throw new NotFoundException('El usuario ya existe, inténtalo nuevamente');
+      throw new ConflictException('El usuario ya existe, inténtalo nuevamente');
     }
 
     // Se hashea la contrasena recibida
@@ -65,8 +65,48 @@ export class UserService {
       estado,
       rol: rol || Rol.usuario
     });
-    
+
     return this.userRepository.save(usuario);
+  }
+
+  async login(loginDto: LoginDto) {
+    const { contrasena, email } = loginDto;
+
+    // Verifica la existencia del usuario
+    const existeUsuario = await this.verificarExistenciaUsuario(email);
+
+    // Si no existe retorna error
+    if (!existeUsuario) {
+      throw new NotFoundException("El usuario no existe, intentalo nuevamente");
+    }
+
+    // Compara la contraseña encriptada con la contraseña ingresada en el login
+    const verificarContrasena = await bcrypt.compare(
+      contrasena,
+      existeUsuario.contrasena
+    );
+
+    // Si la contraseña no coincide lanza un error
+    if (!verificarContrasena) {
+      throw new UnauthorizedException("Contraseña inválida");
+    };
+
+    // Generación del token
+    const token = this.jwtServ.sign(
+      {
+        sub: existeUsuario.id,
+        rol: existeUsuario.rol
+      },
+      {
+        secret: this.configService.get<string>('JWT_SECRET')
+      }
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Login exitoso',
+      jwt_token: token
+    };
   }
 
   // Encontrar todos los usuarios sin su contrasena

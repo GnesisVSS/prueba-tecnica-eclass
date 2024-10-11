@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus, UnauthorizedException, HttpCode } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Request } from 'express';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('user')
 export class UserController {
@@ -16,6 +16,17 @@ export class UserController {
       return {message: 'Usuario registrado de manera exitosa'}
     } catch (error) {
       throw new HttpException('No se pudo crear el usuario',HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  // Login de usuarios
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginDto: LoginDto){
+    try {
+      return await this.userService.login(loginDto);
+    } catch (error) {
+      throw new UnauthorizedException("Credenciales inválidas");
     }
   }
 
