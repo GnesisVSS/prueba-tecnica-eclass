@@ -184,10 +184,22 @@ export class UserService {
     } catch (error) {
       throw new InternalServerErrorException('Falló la eliminación del usuario')
     }
-    
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  //Encontrar la información de un usuario especifico
+  async findOne(email: string): Promise<User> {
+    try {
+      const usuario = await this.userRepository.findOne({
+        where: { email },
+        select: ['id', 'nombre', 'apellido', 'email', 'estado', 'rol']
+      });
+      if (!usuario) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      return usuario;
+    } catch (error) {
+      throw new InternalServerErrorException('Algo salió mal en la busqueda del usuario especificado')
+    }
   }
 }
