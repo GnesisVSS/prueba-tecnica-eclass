@@ -60,16 +60,31 @@ export class UserController {
     } catch (error) {
       throw new HttpException("No se pudo modificar el usuario",HttpStatus.BAD_REQUEST)
     }
+  }
+
+  // Eliminar un usuario
+  @Delete()
+  @UseGuards(JwtGuard)
+  async remove(@Query('email') email: string, @Req() req): Promise<{message: string}> {
+
+    if(req.user.rol !== 'admin'){
+      throw new UnauthorizedException('Solo los administradores pueden eliminar un usuario');
+    }
+
+    try {
+      await this.userService.delete(email)
+      return {message: 'Usuario eliminado correctamente'}
+    } catch (error) {
+      throw new HttpException("No se pudo eliminar el usuario"  + error.message ,HttpStatus.BAD_REQUEST)
+    }
 
   }
 
+  // Información de usuario
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
+    // Filtro dinámico por nombre y/o apellido, rol, estado o correo
 }

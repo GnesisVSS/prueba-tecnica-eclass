@@ -123,10 +123,6 @@ export class UserService {
     })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
   // Modificar usuarios
   async update(email: string, updateUserDto: UpdateUserDto) {
 
@@ -169,7 +165,29 @@ export class UserService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  // Eliminar un usuario
+  async delete(email: string) {
+    const existeUsuario = await this.verificarExistenciaUsuario(email);
+
+    if (!existeUsuario) {
+      throw new NotFoundException("El usuario no existe, intentalo nuevamente");
+    }
+
+    try {
+      const resultado = await this.userRepository.delete(existeUsuario)
+
+      if (resultado.affected === 0) {
+        throw new NotFoundException("El usuario no existe, intentalo nuevamente");
+      }
+      return { message: 'Usuario eliminado exitosamente' };
+
+    } catch (error) {
+      throw new InternalServerErrorException('Falló la eliminación del usuario')
+    }
+    
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} user`;
   }
 }
