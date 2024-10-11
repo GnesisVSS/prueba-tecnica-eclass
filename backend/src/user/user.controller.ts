@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus, UnauthorizedException, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus, UnauthorizedException, HttpCode, UseGuards, BadRequestException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('user')
 export class UserController {
@@ -10,7 +11,14 @@ export class UserController {
 
   // Crear usuario nuevo
   @Post('registro')
+  @UseGuards(JwtGuard)
   async create(@Body() createUserDto: CreateUserDto, @Req() req): Promise<{message: string}>{
+    
+    // Verificacion de que sea un administrador el que quiera crear un nuevo usuario
+    if(req.user.rol !== 'admin'){
+      throw new UnauthorizedException('Solo los administradores pueden agregar nuevos usuarios');
+    }
+
     try {
       await this.userService.create(createUserDto, req.usuario);
       return {message: 'Usuario registrado de manera exitosa'}
@@ -32,14 +40,27 @@ export class UserController {
 
   // Encuentra todos los usuarios para listarlos
   @Get()
+  @UseGuards(JwtGuard)
   findAll() {
     return this.userService.findAll();
   }
 
   // Modificar usuarios
   @Patch()
-  update(@Query('email') email: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(email, updateUserDto);
+  @UseGuards(JwtGuard)
+  update(@Query('email') email: string, @Body() updateUserDto: UpdateUserDto, @Req() req): Promise<{message: string}>{
+
+    // Se verifica que el usuario que haya iniciado sesion y su token sean de un administrador para poder modificar
+    if(req.user.rol !== 'admin'){
+      throw new UnauthorizedException('Solo los administradores pueden modificar un usuario');
+    }
+
+    try {
+      return this.userService.update(email, updateUserDto);
+    } catch (error) {
+      throw new HttpException("No se pudo modificar el usuario",HttpStatus.BAD_REQUEST)
+    }
+
   }
 
   @Get(':id')
