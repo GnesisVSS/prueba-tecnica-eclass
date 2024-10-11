@@ -4,6 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtGuard } from 'src/guards/jwt.guard';
+import { Rol } from './enum/roles.enum';
+import { searchDto } from './dto/search.dto';
 
 @Controller('user')
 export class UserController {
@@ -96,4 +98,10 @@ export class UserController {
 
 
   // Filtro dinámico por nombre y/o apellido, rol, estado o correo
+  @Get('search')
+  @UseGuards(JwtGuard)
+  async searchUser(@Query() query:searchDto) {
+    const usuario = await this.userService.searchUser(query);
+    return {message: `Se encontraron ${usuario.length} usuarios`, data: {usuario}}
+  }
 }

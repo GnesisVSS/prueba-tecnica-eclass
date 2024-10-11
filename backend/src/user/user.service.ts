@@ -1,14 +1,15 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginDto } from './dto/login.dto';
 import { Rol } from './enum/roles.enum';
 import * as bcrypt from 'bcrypt';
+import { searchDto } from './dto/search.dto';
 
 @Injectable()
 export class UserService {
@@ -200,6 +201,57 @@ export class UserService {
       return usuario;
     } catch (error) {
       throw new InternalServerErrorException('Algo salió mal en la busqueda del usuario especificado')
+    }
+  }
+
+  //Filtro dinámico de usuarios
+  async searchUser(searchUser: searchDto): Promise<Partial<User>[]>{
+    try {
+      const {email, nombre, apellido, rol, estado} = searchUser;
+
+
+      const query: any = {
+        select: [
+          'id',
+          'email',
+          'nombre',
+          'apellido',
+          'rol',
+          'estado'
+        ],
+        where: {}
+      };
+
+      if(email) {
+        query.where['email'] = Like(`%${email}`);
+      }
+
+      if(nombre) {
+        query.where['nombre'] = Like(`%${nombre}`);
+      }
+
+      if(apellido) {
+        query.where['apellido'] = Like(`%${apellido}`);
+      }
+
+      if(rol) {
+        query.where['rol'] = Like(`${rol}`);
+      }
+
+      if(estado) {
+        query.where['estado'] = Like(`${estado}`);
+      }
+
+      const usuario = await this.userRepository.find(query);
+
+      if(usuario.length <= 0){
+        return [];
+      }
+
+      return usuario;
+      
+    } catch (error) {
+      throw new BadRequestException('Error al buscar el usuario')
     }
   }
 }
