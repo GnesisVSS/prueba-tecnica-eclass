@@ -96,7 +96,8 @@ export class UserService {
     const token = this.jwtServ.sign(
       {
         sub: existeUsuario.id,
-        rol: existeUsuario.rol
+        rol: existeUsuario.rol,
+        email: existeUsuario.email
       },
       {
         secret: this.configService.get<string>('JWT_SECRET')

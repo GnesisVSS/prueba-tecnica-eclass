@@ -83,7 +83,7 @@ export class UserController {
   }
 
   // Información de usuario
-  @Get('/profile')
+  @Get('/user-info')
   @UseGuards(JwtGuard)
   async findOne(@Query('email') email: string) {
     try {
@@ -96,6 +96,19 @@ export class UserController {
     }
   }
 
+  // Profile
+  @Get('/profile')
+  @UseGuards(JwtGuard)
+  async profile(@Req() req) {
+    try {
+      return await this.userService.findOne(req.user.email);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException('No se puede ver el perfil del usuario', HttpStatus.BAD_REQUEST);
+    }
+  }
 
   // Filtro dinámico por nombre y/o apellido, rol, estado o correo
   @Get('search')
