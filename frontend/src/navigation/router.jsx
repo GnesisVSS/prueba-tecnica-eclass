@@ -8,7 +8,7 @@ import Inicio from "../pages/inicio/Inicio";
 import VistaUsuario from "../pages/vista-usuario/VistaUsuario";
   
 
-const router = createBrowserRouter(
+const Router = createBrowserRouter(
     createRoutesFromElements(
         <>
             <Route path="/" element={<Login/>}/>
@@ -18,4 +18,4 @@ const router = createBrowserRouter(
     )
 )
 
-export default router;
+export default Router;
