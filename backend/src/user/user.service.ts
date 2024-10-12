@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -128,44 +128,53 @@ export class UserService {
   // Modificar usuarios
   async update(email: string, updateUserDto: UpdateUserDto) {
 
+    // Verificar si el usuario existe
     const existeUsuario = await this.userRepository.findOne({
       where: { email: email }
-    })
-
+    });
+  
     if (!existeUsuario) {
       throw new NotFoundException("El usuario no existe, intentalo nuevamente");
     }
-
+  
+    // Guardar la información original del usuario
     const infoOriginal = { ...existeUsuario };
-
+  
+    // Evitar que se actualice la contraseña
     for (const key of Object.keys(updateUserDto)) {
+      if (key === 'contrasena') {
+        throw new ForbiddenException("No puedes actualizar la contraseña directamente")
+      }
       if (key in existeUsuario) {
         existeUsuario[key] = updateUserDto[key];
       }
     }
-
+  
     try {
+      // Guardar los cambios
       await this.userRepository.save(existeUsuario);
-
+  
+      // Crear un objeto con los campos que fueron actualizados
       const infoActualizada = Object.keys(updateUserDto).reduce(
         (acc, key) => {
-          if (updateUserDto[key] !== infoOriginal[key]) {
+          if (updateUserDto[key] !== infoOriginal[key] && key !== 'contrasena') {
             acc[`new ${key}`] = updateUserDto[key];
           }
           return acc;
         },
         {} as Record<string, any>,
       );
-
+  
       return {
         statusCode: HttpStatus.OK,
         message: 'Usuario actualizado exitosamente',
         data: infoActualizada
       };
     } catch (error) {
-      throw new InternalServerErrorException('Falló la actualizacion del usuario')
+      throw new InternalServerErrorException('Falló la actualización del usuario');
     }
   }
+  
 
   // Eliminar un usuario
   async delete(email: string) {
