@@ -129,9 +129,7 @@ export class UserService {
   async update(email: string, updateUserDto: UpdateUserDto) {
 
     // Verificar si el usuario existe
-    const existeUsuario = await this.userRepository.findOne({
-      where: { email: email }
-    });
+    const existeUsuario = await this.verificarExistenciaUsuario(email);
   
     if (!existeUsuario) {
       throw new NotFoundException("El usuario no existe, intentalo nuevamente");
@@ -262,6 +260,38 @@ export class UserService {
       
     } catch (error) {
       throw new BadRequestException('Error al buscar el usuario')
+    }
+  }
+
+  async updatePassword(email: string, contrasenaActual: string, contrasenaNueva: string, contrasenaConfirmacion: string): Promise<{ statusCode: number, message: string }>{
+    const existeUsuario = await this.verificarExistenciaUsuario(email);
+
+    if(!existeUsuario){
+      throw new NotFoundException('El usuario no existe, intentalo nuevamente');
+    }
+
+    const contrasenaCoincide = await bcrypt.compare(contrasenaActual, existeUsuario.contrasena);
+
+    if(!contrasenaCoincide){
+      throw new UnauthorizedException('La contraseña actual con la registrada en la base de datos no coinciden');
+    }
+
+    if(contrasenaNueva !== contrasenaConfirmacion){
+      throw new UnauthorizedException('La contraseña nueva con su correspondiente verificación no coincide');
+    }
+
+    const contrasenaHasheada = await this.contrasenaHash(contrasenaNueva);
+
+    existeUsuario.contrasena = contrasenaHasheada;
+
+    try {
+      await this.userRepository.save(existeUsuario);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Contraseña actualizada exitosamente'
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Falló la actualización de la contraseña')
     }
   }
 }
