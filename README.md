@@ -1,7 +1,7 @@
 # prueba-tecnica-eclass
 Prueba tecnica para eclass utilizando nodeJS
 
-<h1>Archivo .env <h1>
+<h1>Archivo .env </h1>
   
 > [!NOTE]
 > Este archivo debe ser cargado en la raíz de la carpeta backend para poder utilizar el JWT y a su vez debe modificarse con los datos de conexion propios a la base de datos para poder utilizar de manera correcta la aplicación.
