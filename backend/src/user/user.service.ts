@@ -263,17 +263,11 @@ export class UserService {
     }
   }
 
-  async updatePassword(email: string, contrasenaActual: string, contrasenaNueva: string, contrasenaConfirmacion: string): Promise<{ statusCode: number, message: string }>{
+  async updatePassword(email: string, contrasenaNueva: string, contrasenaConfirmacion: string): Promise<{ statusCode: number, message: string }>{
     const existeUsuario = await this.verificarExistenciaUsuario(email);
 
     if(!existeUsuario){
       throw new NotFoundException('El usuario no existe, intentalo nuevamente');
-    }
-
-    const contrasenaCoincide = await bcrypt.compare(contrasenaActual, existeUsuario.contrasena);
-
-    if(!contrasenaCoincide){
-      throw new UnauthorizedException('La contraseña actual con la registrada en la base de datos no coinciden');
     }
 
     if(contrasenaNueva !== contrasenaConfirmacion){

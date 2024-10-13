@@ -123,6 +123,6 @@ export class UserController {
   @UseGuards(JwtGuard)
   async updatePassword(@Body() changePasswordDto: ChangePasswordDto, @Req() req) {
       const email = req.user.email;
-      return await this.userService.updatePassword(email, changePasswordDto.contrasenaActual, changePasswordDto.contrasenaNueva, changePasswordDto.contrasenaConfirmacion)
+      return await this.userService.updatePassword(email, changePasswordDto.contrasenaNueva, changePasswordDto.contrasenaConfirmacion)
   }
 }
