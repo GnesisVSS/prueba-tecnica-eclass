@@ -1,10 +1,11 @@
 import React from 'react'
+import './Inicio.css';
 
 function Inicio() {
   return (
-    <div>
+    <section id='inicio'>
         <h1>Inicio</h1>
-    </div>
+    </section>
   )
 }
 
