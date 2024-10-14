@@ -73,7 +73,24 @@ JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a757901
                   }
                }
             },
-            "url":"http://localhost:3000/user/updatePassword"
+            "url":{
+               "raw":"http://localhost:3000/user/updatePassword?email=",
+               "protocol":"http",
+               "host":[
+                  "localhost"
+               ],
+               "port":"3000",
+               "path":[
+                  "user",
+                  "updatePassword"
+               ],
+               "query":[
+                  {
+                     "key":"email",
+                     "value":""
+                  }
+               ]
+            }
          },
          "response":[
             
@@ -270,7 +287,7 @@ JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a757901
                }
             ],
             "url":{
-               "raw":"http://localhost:3000/user/search",
+               "raw":"http://localhost:3000/user/search?nombre=string",
                "protocol":"http",
                "host":[
                   "localhost"
@@ -283,8 +300,7 @@ JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a757901
                "query":[
                   {
                      "key":"nombre",
-                     "value":"string",
-                     "disabled":true
+                     "value":"string"
                   },
                   {
                      "key":"apellido",
@@ -341,5 +357,4 @@ JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a757901
       }
    ]
 }
-
 ```
