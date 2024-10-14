@@ -1,85 +1,364 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Prueba tecnica eclass
+Prueba tecnica enfocada en la creación de un microservicio con un mantenedor de usuarios.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Pasos a seguir para la ejecución del proyecto.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Script de base de datos mysql
 
-## Description
+```
+-- creacion de la base de datos control usuarios
+CREATE DATABASE IF NOT EXISTS control_usuarios;
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+-- creación de la tabla usuarios en la base de datos control de usuarios
+CREATE TABLE control_usuarios.usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    apellido VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    contrasena VARCHAR(255) NOT NULL,
+    rol ENUM('admin', 'usuario') DEFAULT 'usuario',
+    estado ENUM('activo', 'inactivo') DEFAULT 'activo'
+);
 
-## Project setup
-
-```bash
-$ npm install
+-- inserción de datos por defecto en la tabla usuarios
+INSERT INTO control_usuarios.usuarios (nombre, apellido, email, contrasena, rol, estado) VALUES
+    ('Juan', 'Pérez', 'juan.perez@example.com', '$2b$10$hashedPassword1', 'usuario', 'activo'),
+    ('María', 'González', 'maria.gonzalez@example.com', '$2b$10$hashedPassword2', 'admin', 'activo'),
+    ('Carlos', 'López', 'carlos.lopez@example.com', '$2b$10$hashedPassword3', 'usuario', 'activo'),
+    ('Laura', 'Martínez', 'laura.martinez@example.com', '$2b$10$hashedPassword4', 'usuario', 'inactivo'),
+    ('Andrés', 'Fernández', 'andres.fernandez@example.com', '$2b$10$hashedPassword5', 'admin', 'activo');
 ```
 
-## Compile and run the project
 
-```bash
-# development
-$ npm run start
+## Archivo .env
+  
+> [!IMPORTANT]
+> Este archivo <strong>debe ser cargado en la raíz de la carpeta backend</strong> para poder utilizar el JWT y a su vez debe modificarse con los datos de conexion propios a la base de datos para poder utilizar de manera correcta la aplicación.
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+HOST="localhost"
+PORT=3306
+DATABASE="control_usuarios"
+USER="root"
+PASSWORD="password"
+JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a75790118274c47e67e6a9a99d896243a409a25a50bb087b3a40f8a828dfced11b4"
 ```
 
-## Run tests
+## Archivo API Postman
+En este archivo se encuentran todos los endpoints correspondientes ademas de sus headers y querys. En el caso de estos últimos, se deben completar con el token obtenido en el caso del header y con el campo que se requiera para las querys. 
 
-```bash
-# unit tests
-$ npm run test
+> [!IMPORTANT]
+> En el caso del filtro dinamico, el resto de las querys están desactivadas, recordar activarlas de acuerdo a los filtros que se quieran aplicar.
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+{
+   "info":{
+      "name":"prueba-eclass",
+      "schema":"https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+   },
+   "item":[
+      {
+         "name":"Cambio Contraseña",
+         "request":{
+            "method":"POST",
+            "header":[
+               {
+                  "key":"Authorization",
+                  "value":"Bearer <token>",
+                  "type":"text"
+               }
+            ],
+            "body":{
+               "mode":"raw",
+               "raw":"{\r\n  \"contrasenaNueva\": \"string\",\r\n  \"contrasenaConfirmacion\": \"string\"\r\n}",
+               "options":{
+                  "raw":{
+                     "language":"json"
+                  }
+               }
+            },
+            "url":{
+               "raw":"http://localhost:3000/user/updatePassword?email=",
+               "protocol":"http",
+               "host":[
+                  "localhost"
+               ],
+               "port":"3000",
+               "path":[
+                  "user",
+                  "updatePassword"
+               ],
+               "query":[
+                  {
+                     "key":"email",
+                     "value":""
+                  }
+               ]
+            }
+         },
+         "response":[
+            
+         ]
+      },
+      {
+         "name":"Modificar",
+         "request":{
+            "method":"PATCH",
+            "header":[
+               {
+                  "key":"Authorization",
+                  "value":"Bearer <token>",
+                  "type":"text"
+               }
+            ],
+            "body":{
+               "mode":"raw",
+               "raw":"{\r\n    \"nombre\":\"string\",\r\n    \"apellido\":\"string\",\r\n    \"email\":\"string\",\r\n    \"rol\":\"enum (admin, usuario)\",\r\n    \"estado\":\"enum (activo, inactivo)\"\r\n}",
+               "options":{
+                  "raw":{
+                     "language":"json"
+                  }
+               }
+            },
+            "url":{
+               "raw":"http://localhost:3000/user/?email=string",
+               "protocol":"http",
+               "host":[
+                  "localhost"
+               ],
+               "port":"3000",
+               "path":[
+                  "user",
+                  ""
+               ],
+               "query":[
+                  {
+                     "key":"email",
+                     "value":"string"
+                  }
+               ]
+            }
+         },
+         "response":[
+            
+         ]
+      },
+      {
+         "name":"Informacion de usario",
+         "request":{
+            "method":"GET",
+            "header":[
+               {
+                  "key":"Authorization",
+                  "value":"Bearer <token>",
+                  "type":"text"
+               }
+            ],
+            "url":{
+               "raw":"http://localhost:3000/user/user-info?email=string",
+               "protocol":"http",
+               "host":[
+                  "localhost"
+               ],
+               "port":"3000",
+               "path":[
+                  "user",
+                  "user-info"
+               ],
+               "query":[
+                  {
+                     "key":"email",
+                     "value":"string"
+                  }
+               ]
+            }
+         },
+         "response":[
+            
+         ]
+      },
+      {
+         "name":"Perfil",
+         "request":{
+            "method":"GET",
+            "header":[
+               {
+                  "key":"Authorization",
+                  "value":"Bearer <token>",
+                  "type":"text"
+               }
+            ],
+            "url":"http://localhost:3000/user/profile"
+         },
+         "response":[
+            
+         ]
+      },
+      {
+         "name":"Eliminar",
+         "request":{
+            "method":"DELETE",
+            "header":[
+               {
+                  "key":"Authorization",
+                  "value":"Bearer <token>",
+                  "type":"text"
+               }
+            ],
+            "url":{
+               "raw":"http://localhost:3000/user/?email=string",
+               "protocol":"http",
+               "host":[
+                  "localhost"
+               ],
+               "port":"3000",
+               "path":[
+                  "user",
+                  ""
+               ],
+               "query":[
+                  {
+                     "key":"email",
+                     "value":"string"
+                  }
+               ]
+            }
+         },
+         "response":[
+            
+         ]
+      },
+      {
+         "name":"Listar",
+         "protocolProfileBehavior":{
+            "disableBodyPruning":true
+         },
+         "request":{
+            "method":"GET",
+            "header":[
+               {
+                  "key":"Authorization",
+                  "value":"Bearer <token>",
+                  "type":"text"
+               }
+            ],
+            "body":{
+               "mode":"raw",
+               "raw":"{\r\n  \"email\":\"string\",\r\n  \"password\":\"string\"\r\n}",
+               "options":{
+                  "raw":{
+                     "language":"json"
+                  }
+               }
+            },
+            "url":"http://localhost:3000/user/"
+         },
+         "response":[
+            
+         ]
+      },
+      {
+         "name":"Login",
+         "request":{
+            "method":"POST",
+            "header":[
+               
+            ],
+            "body":{
+               "mode":"raw",
+               "raw":"{\r\n  \"email\":\"string\",\r\n  \"contrasena\":\"string\"\r\n}",
+               "options":{
+                  "raw":{
+                     "language":"json"
+                  }
+               }
+            },
+            "url":"http://localhost:3000/user/login"
+         },
+         "response":[
+            
+         ]
+      },
+      {
+         "name":"Filtro",
+         "request":{
+            "method":"GET",
+            "header":[
+               {
+                  "key":"Authorization",
+                  "value":"Bearer <token>",
+                  "type":"text"
+               }
+            ],
+            "url":{
+               "raw":"http://localhost:3000/user/search?nombre=string",
+               "protocol":"http",
+               "host":[
+                  "localhost"
+               ],
+               "port":"3000",
+               "path":[
+                  "user",
+                  "search"
+               ],
+               "query":[
+                  {
+                     "key":"nombre",
+                     "value":"string"
+                  },
+                  {
+                     "key":"apellido",
+                     "value":"string",
+                     "disabled":true
+                  },
+                  {
+                     "key":"email",
+                     "value":"string",
+                     "disabled":true
+                  },
+                  {
+                     "key":"rol",
+                     "value":"string",
+                     "disabled":true
+                  },
+                  {
+                     "key":"estado",
+                     "value":"string",
+                     "disabled":true
+                  }
+               ]
+            }
+         },
+         "response":[
+            
+         ]
+      },
+      {
+         "name":"Registro",
+         "request":{
+            "method":"POST",
+            "header":[
+               {
+                  "key":"Authorization",
+                  "value":"Bearer <token>",
+                  "type":"text"
+               }
+            ],
+            "body":{
+               "mode":"raw",
+               "raw":"{\r\n  \"nombre\":\"string\",\r\n  \"apellido\":\"string\",\r\n  \"email\":\"string\",\r\n  \"contrasena\":\"string\"\r\n}",
+               "options":{
+                  "raw":{
+                     "language":"json"
+                  }
+               }
+            },
+            "url":"http://localhost:3000/user/registro"
+         },
+         "response":[
+            
+         ]
+      }
+   ]
+}
+```
