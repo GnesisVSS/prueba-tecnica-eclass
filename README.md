@@ -49,10 +49,8 @@ JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a757901
 ```
 {
 	"info": {
-		"_postman_id": "038f7f98-865e-4455-903d-87d43955f696",
 		"name": "prueba-eclass",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "24893210"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
@@ -322,6 +320,5 @@ JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a757901
 			"response": []
 		}
 	]
-}
 
 ```
