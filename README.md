@@ -32,7 +32,7 @@ INSERT INTO control_usuarios.usuarios (nombre, apellido, email, contrasena, rol,
 
 ## Archivo .env
   
-> [!NOTE]
+> [!IMPORTANT]
 > Este archivo <strong>debe ser cargado en la raíz de la carpeta backend</strong> para poder utilizar el JWT y a su vez debe modificarse con los datos de conexion propios a la base de datos para poder utilizar de manera correcta la aplicación.
 
 ```
@@ -45,6 +45,10 @@ JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a757901
 ```
 
 ## Archivo API Postman
+En este archivo se encuentran todos los endpoints correspondientes ademas de sus headers y querys. En el caso de estos últimos, se deben completar con el token obtenido en el caso del header y con el campo que se requiera para las querys. 
+
+> [!IMPORTANT]
+> En el caso del filtro dinamico, el resto de las querys están desactivadas, recordar activarlas de acuerdo a los filtros que se quieran aplicar.
 
 ```
 {
