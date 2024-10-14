@@ -1,8 +1,0 @@
-#inicio {
-    background-color: white; 
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-}
