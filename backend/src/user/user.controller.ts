@@ -121,8 +121,13 @@ export class UserController {
 
   @Post('updatePassword')
   @UseGuards(JwtGuard)
-  async updatePassword(@Body() changePasswordDto: ChangePasswordDto, @Req() req) {
-      const email = req.user.email;
-      return await this.userService.updatePassword(email, changePasswordDto.contrasenaNueva, changePasswordDto.contrasenaConfirmacion)
+  async updatePassword(@Body() changePasswordDto: ChangePasswordDto, @Req() req, @Query('email') email: string) {
+    if (!email) {
+      throw new BadRequestException('El email es requerido');
+    }
+    if (req.user.rol !== 'admin') {
+      throw new UnauthorizedException('Solo los administradores pueden actualizar la contraseña de un usuario');
+    }
+    return await this.userService.updatePassword(email, changePasswordDto.contrasenaNueva, changePasswordDto.contrasenaConfirmacion)
   }
 }
