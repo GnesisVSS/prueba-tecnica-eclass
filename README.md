@@ -5,6 +5,9 @@ Pasos a seguir para la ejecución del proyecto.
 
 ## Script de base de datos mysql
 
+> [!NOTE]
+> La base de datos se encuentra en rds, sin embargo esta fue la que se usó para la ejecución de pruebas locales y como base para la inserción de datos en aws.
+
 ```
 -- creacion de la base de datos control usuarios
 CREATE DATABASE IF NOT EXISTS control_usuarios;
@@ -26,26 +29,17 @@ INSERT INTO control_usuarios.usuarios (nombre, apellido, email, contrasena, rol,
     ('María', 'González', 'maria.gonzalez@example.com', '$2b$10$hashedPassword2', 'admin', 'activo'),
     ('Carlos', 'López', 'carlos.lopez@example.com', '$2b$10$hashedPassword3', 'usuario', 'activo'),
     ('Laura', 'Martínez', 'laura.martinez@example.com', '$2b$10$hashedPassword4', 'usuario', 'inactivo'),
-    ('Andrés', 'Fernández', 'andres.fernandez@example.com', '$2b$10$hashedPassword5', 'admin', 'activo');
-```
-
-
-## Archivo .env
-  
-> [!IMPORTANT]
-> Este archivo <strong>debe ser cargado en la raíz de la carpeta backend</strong> para poder utilizar el JWT y a su vez debe modificarse con los datos de conexion propios a la base de datos para poder utilizar de manera correcta la aplicación.
-
-```
-HOST="localhost"
-PORT=3306
-DATABASE="control_usuarios"
-USER="root"
-PASSWORD="password"
-JWT_SECRET="f45dea7ba1582ddc8e2bb06416c840547a143789d6c999671d31fb319b733a75790118274c47e67e6a9a99d896243a409a25a50bb087b3a40f8a828dfced11b4"
+    ('Andrés', 'Fernández', 'andres.fernandez@example.com', '$2b$10$hashedPassword5', 'admin', 'activo'),
+    ('Admin', 'Admin', 'admin@gmail.com', '$2b$10$YSAUKprD7e.aZSwmqN.Gq.iHDo.rJSpw8uw1Zq41jf2.S.m79I5Km', 'admin', 'activo');
 ```
 
 ## Archivo API Postman
 En este archivo se encuentran todos los endpoints correspondientes ademas de sus headers y querys. En el caso de estos últimos, se deben completar con el token obtenido en el caso del header y con el campo que se requiera para las querys. 
+
+> [!IMPORTANT]
+> Las credenciales de prueba para el login son:
+> <li>Email: admin@gmail.com</li>
+> <li>Contrasena: admin</li>
 
 > [!IMPORTANT]
 > En el caso del filtro dinamico, el resto de las querys están desactivadas, recordar activarlas de acuerdo a los filtros que se quieran aplicar.
@@ -78,7 +72,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                }
             },
             "url":{
-               "raw":"http://localhost:3000/user/updatePassword?email=",
+               "raw":"https://pruebaeclass.netlify.app/user/updatePassword?email=",
                "protocol":"http",
                "host":[
                   "localhost"
@@ -121,7 +115,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                }
             },
             "url":{
-               "raw":"http://localhost:3000/user/?email=string",
+               "raw":"https://pruebaeclass.netlify.app/user/?email=string",
                "protocol":"http",
                "host":[
                   "localhost"
@@ -155,7 +149,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                }
             ],
             "url":{
-               "raw":"http://localhost:3000/user/user-info?email=string",
+               "raw":"https://pruebaeclass.netlify.app/user/user-info?email=string",
                "protocol":"http",
                "host":[
                   "localhost"
@@ -188,7 +182,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                   "type":"text"
                }
             ],
-            "url":"http://localhost:3000/user/profile"
+            "url":"https://pruebaeclass.netlify.app/user/profile"
          },
          "response":[
             
@@ -206,7 +200,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                }
             ],
             "url":{
-               "raw":"http://localhost:3000/user/?email=string",
+               "raw":"https://pruebaeclass.netlify.app/user/?email=string",
                "protocol":"http",
                "host":[
                   "localhost"
@@ -251,7 +245,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                   }
                }
             },
-            "url":"http://localhost:3000/user/"
+            "url":"https://pruebaeclass.netlify.app/user/"
          },
          "response":[
             
@@ -273,7 +267,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                   }
                }
             },
-            "url":"http://localhost:3000/user/login"
+            "url":"https://pruebaeclass.netlify.app/user/login"
          },
          "response":[
             
@@ -291,7 +285,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                }
             ],
             "url":{
-               "raw":"http://localhost:3000/user/search?nombre=string",
+               "raw":"https://pruebaeclass.netlify.app/user/search?nombre=string",
                "protocol":"http",
                "host":[
                   "localhost"
@@ -353,7 +347,7 @@ En este archivo se encuentran todos los endpoints correspondientes ademas de sus
                   }
                }
             },
-            "url":"http://localhost:3000/user/registro"
+            "url":"https://pruebaeclass.netlify.app/user/registro"
          },
          "response":[
             
